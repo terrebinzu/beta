@@ -122,8 +122,9 @@ function displayHistory() {
 // Onload setup
 
 window.onload = async function() {
-  await loadDictionary();
-  displayHistory();
+  await loadDictionary();  // Load dictionary first
+  displayHistory();        // Load conjugation history from localStorage
+
 
   document.getElementById("verbInput").addEventListener("keyup", function(event) {
     if (event.key === "Enter") {
