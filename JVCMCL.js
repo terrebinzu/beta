@@ -124,6 +124,15 @@ window.generate = async function () {
   const result = await searchWord(verbInput);
 
   let normalizedInput = deconjugate(verbInput); // Try deconjugation first
+
+  // Show deconjugation notice if different
+const deconjugateNotice = document.getElementById("deconjugateNotice");
+if (normalizedInput !== wanakana.toKana(verbInput)) {
+  deconjugateNotice.innerHTML = `🔄 Deconjugated Input: <strong>${verbInput}</strong> ➔ <strong>${normalizedInput}</strong>`;
+} else {
+  deconjugateNotice.innerHTML = ""; // Clear if no change
+}
+  
   if (!result) {
     output.innerHTML = `<p>Unknown word or not dictionary form. Please enter a base-form verb like 食べる.</p>`;
     return;
