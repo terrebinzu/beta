@@ -1,18 +1,159 @@
+function deconjugate(input) {
+  const kanaInput = wanakana.toKana(input);
+
+  // Handle Irregular Verbs
+  if (kanaInput.startsWith("し") && (kanaInput.endsWith("ます") || kanaInput.endsWith("ました") || kanaInput.endsWith("ない") || kanaInput.endsWith("た") || kanaInput.endsWith("て"))) {
+    return "する";
+  }
+  if (kanaInput.startsWith("き") && (kanaInput.endsWith("ます") || kanaInput.endsWith("ました") || kanaInput.endsWith("ない") || kanaInput.endsWith("た") || kanaInput.endsWith("て"))) {
+    return "くる";
+  }
+
+  // Polite Forms
+  if (kanaInput.endsWith("ました") || kanaInput.endsWith("ます")) {
+    return kanaInput.slice(0, -3) + "る";
+  }
+  if (kanaInput.endsWith("ませんでした") || kanaInput.endsWith("ません")) {
+    return kanaInput.slice(0, -4) + "る";
+  }
+
+  // Plain Past (た/だ)
+  if (kanaInput.endsWith("った") || kanaInput.endsWith("んだ")) {
+    return kanaInput.slice(0, -2) + "う"; // usually u-verbs
+  }
+  if (kanaInput.endsWith("いた")) {
+    return kanaInput.slice(0, -2) + "く";
+  }
+  if (kanaInput.endsWith("いだ")) {
+    return kanaInput.slice(0, -2) + "ぐ";
+  }
+  if (kanaInput.endsWith("した")) {
+    return kanaInput.slice(0, -2) + "す";
+  }
+
+  // Plain Negative
+  if (kanaInput.endsWith("ない")) {
+    return kanaInput.slice(0, -2) + "る"; // for most ichidan
+  }
+
+  // Te-form (optional, not perfect)
+  if (kanaInput.endsWith("って")) {
+    return kanaInput.slice(0, -2) + "う"; // う-verb
+  }
+  if (kanaInput.endsWith("んで")) {
+    return kanaInput.slice(0, -2) + "む"; // む, ぬ, ぶ usually
+  }
+  if (kanaInput.endsWith("いて")) {
+    return kanaInput.slice(0, -2) + "く";
+  }
+  if (kanaInput.endsWith("いで")) {
+    return kanaInput.slice(0, -2) + "ぐ";
+  }
+  if (kanaInput.endsWith("して")) {
+    return kanaInput.slice(0, -2) + "す";
+  }
+
+  // If none matched, return original
+  return kanaInput;
+}
+
+// Utilities
+
+function saveToHistory(verb) {
+  let history = JSON.parse(localStorage.getItem("conjugationHistory")) || [];
+  history.unshift(verb);
+  history = history.slice(0, 5);
+  localStorage.setItem("conjugationHistory", JSON.stringify(history));
+}
+
+function displayHistory() {
+  const historyList = document.getElementById("historyList");
+  historyList.innerHTML = "";
+
+  let history = JSON.parse(localStorage.getItem("conjugationHistory")) || [];
+
+  history.forEach(verb => {
+    const li = document.createElement("li");
+    li.className = "list-group-item list-group-item-action";
+    li.textContent = verb;
+    li.onclick = () => {
+      document.getElementById("verbInput").value = verb;
+      generate();
+    };
+    historyList.appendChild(li);
+  });
+}
+
+// bonus helper
+function capitalize(word) { 
+  return word.charAt(0).toUpperCase() + word.slice(1);
+}
+
+
+  document.getElementById("verbInput").addEventListener("keyup", function(event) {
+    if (event.key === "Enter") {
+      generate();
+    }
+  });
+
+  document.getElementById("darkModeToggle").addEventListener('change', function() {
+    if (this.checked) {
+      document.body.classList.add("bg-dark", "text-white");
+      document.getElementById("output").classList.remove("bg-white");
+      document.getElementById("output").classList.add("bg-secondary");
+    } else {
+      document.body.classList.remove("bg-dark", "text-white");
+      document.getElementById("output").classList.remove("bg-secondary");
+      document.getElementById("output").classList.add("bg-white");
+    }
+  });
+};
+
+// Onload setup
+
+window.onload = async function() {
+  await loadDictionary();  // Load dictionary first
+  displayHistory();        // Load conjugation history from localStorage
+
 // Main Logic
 
 window.generate = async function () {
   const verbInput = document.getElementById("verbInput").value.trim();
   const output = document.getElementById("output");
-
+  const selectedLanguage = document.getElementById("languageSelect").value;
   const result = await searchWord(verbInput);
 
+  let normalizedInput = deconjugate(verbInput); // Try deconjugation first
   if (!result) {
     output.innerHTML = `<p>Unknown word or not dictionary form. Please enter a base-form verb like 食べる.</p>`;
     return;
   }
 
   const dictForm = result.slug;
-  const definitions = result.senses[0]?.english_definitions.join(', ') || "No definition found";
+  
+let definitions; // Pick definition based on selected language
+switch(selectedLanguage) {
+  case "chinese":
+    definitions = result.senses[0]?.chinese_definitions?.join(', ') || "";
+    break;
+  case "spanish":
+    definitions = result.senses[0]?.spanish_definitions?.join(', ') || "";
+    break;
+  case "thai":
+    definitions = result.senses[0]?.thai_definitions?.join(', ') || "";
+    break;
+     case "korean":
+    definitions = result.senses[0]?.korean_definitions?.join(', ') || "";
+    break;
+  default:
+    definitions = result.senses[0]?.english_definitions?.join(', ') || "";
+}
+
+  // Fallback to English if the selected language isn't available
+if (!definitions) {
+  
+  definitions = result.senses[0]?.english_definitions.join(', ') || "No definition found.";
+}
   const pos = result.senses[0]?.parts_of_speech.join(', ') || "Unknown part of speech";
   const tags = result.is_common ? 'Common word' : '';
 
@@ -92,55 +233,3 @@ async function conjugateAndDisplay(baseForm, html) {
   output.innerHTML = `<p>I do not know how to conjugate "${baseForm}" yet.</p>`;
 }
 
-// Utilities
-
-function saveToHistory(verb) {
-  let history = JSON.parse(localStorage.getItem("conjugationHistory")) || [];
-  history.unshift(verb);
-  history = history.slice(0, 5);
-  localStorage.setItem("conjugationHistory", JSON.stringify(history));
-}
-
-function displayHistory() {
-  const historyList = document.getElementById("historyList");
-  historyList.innerHTML = "";
-
-  let history = JSON.parse(localStorage.getItem("conjugationHistory")) || [];
-
-  history.forEach(verb => {
-    const li = document.createElement("li");
-    li.className = "list-group-item list-group-item-action";
-    li.textContent = verb;
-    li.onclick = () => {
-      document.getElementById("verbInput").value = verb;
-      generate();
-    };
-    historyList.appendChild(li);
-  });
-}
-
-// Onload setup
-
-window.onload = async function() {
-  await loadDictionary();  // Load dictionary first
-  displayHistory();        // Load conjugation history from localStorage
-
-
-  document.getElementById("verbInput").addEventListener("keyup", function(event) {
-    if (event.key === "Enter") {
-      generate();
-    }
-  });
-
-  document.getElementById("darkModeToggle").addEventListener('change', function() {
-    if (this.checked) {
-      document.body.classList.add("bg-dark", "text-white");
-      document.getElementById("output").classList.remove("bg-white");
-      document.getElementById("output").classList.add("bg-secondary");
-    } else {
-      document.body.classList.remove("bg-dark", "text-white");
-      document.getElementById("output").classList.remove("bg-secondary");
-      document.getElementById("output").classList.add("bg-white");
-    }
-  });
-};
