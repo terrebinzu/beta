@@ -32,6 +32,11 @@ button {
   font-size: 1rem;
 }
 
+#deconjugateNotice {
+  font-style: italic;
+  color: #6c757d; /* Bootstrap muted color */
+}
+
 #output {
   margin-top: 20px;
   background: white;
