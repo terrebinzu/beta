@@ -1,3 +1,36 @@
+let dictionary = []; // Where we will store JMdict
+
+async function loadDictionary() {
+  try {
+    const response = await fetch('https://scriptin.github.io/jmdict-simplified/jmdict-eng-3.1.0.json');
+    dictionary = await response.json();
+    console.log('✅ JMdict loaded:', dictionary.length, 'entries');
+  } catch (error) {
+    console.error('❌ Failed to load JMdict:', error);
+  }
+}
+
+async function searchWord(userInput) {
+  if (dictionary.length === 0) {
+    console.error('❌ Dictionary not loaded yet!');
+    return null;
+  }
+
+  const kanaInput = wanakana.toKana(userInput); // Normalize user input to Kana if needed
+  const kanjiInput = userInput; // Keep original in case it's Kanji
+
+  for (const entry of dictionary) {
+    const japanese = entry.japanese || [];
+    for (const form of japanese) {
+      if (form.word === kanjiInput || form.reading === kanaInput) {
+        return entry; // ✅ Found match
+      }
+    }
+  }
+
+  return null; // ❌ Not found
+}
+
 function deconjugate(input) {
   const kanaInput = wanakana.toKana(input);
 
@@ -157,7 +190,7 @@ switch(selectedLanguage) {
   default:
     definitions = result.senses[0]?.english_definitions?.join(', ') || "";
 }
-
+  
   // Fallback to English if the selected language isn't available
 if (!definitions) {
   
