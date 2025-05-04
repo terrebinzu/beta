@@ -2,8 +2,8 @@ let dictionary = [];
 
 async function loadDictionary() {
   try {
-    const zipUrl = 'https://github.com/terrebinzu/beta/releases/tag/jmdictionary';
-    const response = await fetch(zipUrl);
+
+    const response = await fetch('jmdict-part-1.json');
     const blob = await response.blob();
     const zip = await JSZip.loadAsync(blob);
 
@@ -11,10 +11,9 @@ async function loadDictionary() {
     if (!jsonFileName) throw new Error("No JSON file found inside the ZIP."); 
 
     const jsonText = await zip.file(jsonFileName).async("text");
-    dictionary = JSON.parse(jsonText);
-
-    console.log('✅ JMdict loaded from ZIP:', dictionary.length, 'entries');
-  
+    
+ dictionary = await response.json();
+    console.log('✅ JMdict loaded:', dictionary.length, 'entries');
   } catch (error) {
     console.error('❌ Failed to load JMdict from ZIP:', error);
   }
