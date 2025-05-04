@@ -34,4 +34,4 @@ async function searchWord(userInput) {
   }
 
   return null; // Not found
-}；
+};
