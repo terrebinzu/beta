@@ -34,7 +34,6 @@ const selectedLanguage = document.getElementById("languageSelect").value;
           definitions = sense.definitions[selectedLanguage] || sense.definitions.en || ["No definition found."];
         } else {
           definitions = sense.english_definitions || ["No definition found."];
-        }
 
         return {
           ...entry,
