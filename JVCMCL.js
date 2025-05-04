@@ -2,16 +2,7 @@ let dictionary = [];
 
 async function loadDictionary() {
   try {
-
-    const response = await fetch('jmdict-part-1.json');
-    const blob = await response.blob();
-    const zip = await JSZip.loadAsync(blob);
-
-    const jsonFileName = Object.keys(zip.files).find(name => name.endsWith(".json"));
-    if (!jsonFileName) throw new Error("No JSON file found inside the ZIP."); 
-
-    const jsonText = await zip.file(jsonFileName).async("text");
-    
+ const response = await fetch('jmdict-part-1.json'); 
  dictionary = await response.json();
     console.log('✅ JMdict loaded:', dictionary.length, 'entries');
   } catch (error) {
