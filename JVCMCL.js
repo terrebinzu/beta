@@ -8,7 +8,7 @@ async function loadDictionary() {
     const zip = await JSZip.loadAsync(blob);
 
     const jsonFileName = Object.keys(zip.files).find(name => name.endsWith(".json"));
-    if (!jsonFileName) throw new Error("No JSON file found inside the ZIP.");
+    if (!jsonFileName) throw new Error("No JSON file found inside the ZIP."); {
 
     const jsonText = await zip.file(jsonFileName).async("text");
     dictionary = JSON.parse(jsonText);
@@ -21,13 +21,12 @@ async function loadDictionary() {
 
   const kanaInput = wanakana.toKana(userInput); // Normalize user input to Kana if needed
   const kanjiInput = userInput; // Keep original in case it's Kanji
+const selectedLanguage = document.getElementById("languageSelect").value;
 
   for (const entry of dictionary) {
     const japanese = entry.japanese || [];
     for (const form of japanese) {
       if (form.word === kanjiInput || form.reading === kanaInput) {
-
-const selectedLanguage = document.getElementById("languageSelect").value;
         const sense = entry.senses[0];
 
         let definitions;
