@@ -146,7 +146,7 @@ function capitalize(word) {
 window.onload = async function() {
   await loadDictionary();  // Load dictionary first
   displayHistory();        // Load conjugation history from localStorage
-}
+};
 
 // Main Logic
 
