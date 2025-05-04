@@ -1,22 +1,23 @@
-let dictionary = []; // Where we will store JMdict
+let dictionary = [];
 
 async function loadDictionary() {
   try {
- const zipUrl = 'https://github.com/user-attachments/files/20027342/jmdict-all-3.6.1%2B20250428122401.json.zip';
-    
-    const response = await fetch('https://scriptin.github.io/jmdict-simplified/jmdict-eng-3.1.0.json');
-    dictionary = await response.json();
-    console.log('✅ JMdict loaded:', dictionary.length, 'entries');
+    const zipUrl = 'https://github.com/user-attachments/files/20027342/jmdict-all-3.6.1%2B20250428122401.json.zip';
+    const response = await fetch(zipUrl);
+    const blob = await response.blob();
+    const zip = await JSZip.loadAsync(blob);
+
+    const jsonFileName = Object.keys(zip.files).find(name => name.endsWith(".json"));
+    if (!jsonFileName) throw new Error("No JSON file found inside the ZIP.");
+
+    const jsonText = await zip.file(jsonFileName).async("text");
+    dictionary = JSON.parse(jsonText);
+
+    console.log('✅ JMdict loaded from ZIP:', dictionary.length, 'entries');
   } catch (error) {
-    console.error('❌ Failed to load JMdict:', error);
+    console.error('❌ Failed to load JMdict from ZIP:', error);
   }
 }
-
-async function searchWord(userInput) {
-  if (dictionary.length === 0) {
-    console.error('❌ Dictionary not loaded yet!');
-    return null;
-  }
 
   const kanaInput = wanakana.toKana(userInput); // Normalize user input to Kana if needed
   const kanjiInput = userInput; // Keep original in case it's Kanji
@@ -25,7 +26,22 @@ async function searchWord(userInput) {
     const japanese = entry.japanese || [];
     for (const form of japanese) {
       if (form.word === kanjiInput || form.reading === kanaInput) {
-        return entry; // ✅ Found match
+
+const selectedLanguage = document.getElementById("languageSelect").value;
+        const sense = entry.senses[0];
+
+        let definitions;
+        if (sense.definitions) {
+          definitions = sense.definitions[selectedLanguage] || sense.definitions.en || ["No definition found."];
+        } else {
+          definitions = sense.english_definitions || ["No definition found."];
+        }
+
+        return {
+          ...entry,
+          definitions: definitions.join(", "),
+          pos: sense.parts_of_speech?.join(", ") || "Unknown part of speech"
+        };
       }
     }
   }
