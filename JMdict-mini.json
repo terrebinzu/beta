@@ -1,0 +1,24 @@
+[
+  {
+    "slug": "たべる",
+    "is_common": true,
+    "japanese": [{"word": "食べる", "reading": "たべる"}],
+    "senses": [
+      {
+        "english_definitions": ["to eat"],
+        "parts_of_speech": ["Ichidan verb"]
+      }
+    ]
+  },
+  {
+    "slug": "のむ",
+    "is_common": true,
+    "japanese": [{"word": "飲む", "reading": "のむ"}],
+    "senses": [
+      {
+        "english_definitions": ["to drink"],
+        "parts_of_speech": ["Godan verb"]
+      }
+    ]
+  }
+]
