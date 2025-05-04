@@ -13,7 +13,6 @@ async function loadDictionary() {
 // Load dictionary as soon as page loads
 window.onload = async function() {
   await loadDictionary();
-  displayHistory();
 }
 async function searchWord(userInput) {
   if (dictionary.length === 0) {
