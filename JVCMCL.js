@@ -2,6 +2,8 @@ let dictionary = []; // Where we will store JMdict
 
 async function loadDictionary() {
   try {
+ const zipUrl = 'https://github.com/user-attachments/files/20027342/jmdict-all-3.6.1%2B20250428122401.json.zip';
+    
     const response = await fetch('https://scriptin.github.io/jmdict-simplified/jmdict-eng-3.1.0.json');
     dictionary = await response.json();
     console.log('✅ JMdict loaded:', dictionary.length, 'entries');
