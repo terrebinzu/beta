@@ -146,6 +146,7 @@ function capitalize(word) {
 window.onload = async function() {
   await loadDictionary();  // Load dictionary first
   displayHistory();        // Load conjugation history from localStorage
+}
 
 // Main Logic
 
@@ -224,6 +225,7 @@ async function conjugateAndDisplay(baseForm, html) {
   const negMap = { "う":"わ", "つ":"た", "る":"ら", "む":"ま", "ぶ":"ば", "ぬ":"な", "く":"か", "ぐ":"が", "す":"さ" };
   const pastMap = { "う":"った", "つ":"った", "る":"った", "む":"んだ", "ぶ":"んだ", "ぬ":"んだ", "く":"いた", "ぐ":"いだ", "す":"した" };
   const teMap = { "う":"って", "つ":"って", "る":"って", "む":"んで", "ぶ":"んで", "ぬ":"んで", "く":"いて", "ぐ":"いで", "す":"して" };
+}
 
   if (normalizedKana === "する") {
     if (showPolite) html += `<p><strong>Polite:</strong> します</p>`;
