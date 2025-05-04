@@ -14,7 +14,8 @@ async function loadDictionary() {
     dictionary = JSON.parse(jsonText);
 
     console.log('✅ JMdict loaded from ZIP:', dictionary.length, 'entries');
-  } catch (error) {
+  
+  catch (error) {
     console.error('❌ Failed to load JMdict from ZIP:', error);
   }
 }
