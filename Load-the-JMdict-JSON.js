@@ -1,5 +1,3 @@
-dictionary = []; // no 'let'
-
 async function loadDictionary() {
   try {
     const response = await fetch('https://scriptin.github.io/jmdict-simplified/jmdict-eng-3.1.0.json');
