@@ -172,8 +172,7 @@ window.generate = async function () {
   const output = document.getElementById("output");
   const selectedLanguage = document.getElementById("languageSelect").value;
   const result = await searchWord(verbInput);
-
-  let normalizedInput = deconjugate(verbInput); // Try deconjugation first
+  const normalizedInput = deconjugate(verbInput); // Try deconjugation first
 
   // Show deconjugation notice if different
 const deconjugateNotice = document.getElementById("deconjugateNotice");
@@ -184,7 +183,7 @@ if (normalizedInput !== wanakana.toKana(verbInput)) {
 }
   
   if (!result) {
-    output.innerHTML = `<p>Unknown word or not dictionary form. Please enter a base-form verb like 食べる.</p>`;
+    output.innerHTML = `<p>Unknown word or not dictionary form. Please enter a base-form verb.</p>`;
     return;
   }
 
