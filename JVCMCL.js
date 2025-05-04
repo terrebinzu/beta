@@ -140,7 +140,6 @@ function capitalize(word) {
       document.getElementById("output").classList.add("bg-white");
     }
   });
-};
 
 // Onload setup
 
