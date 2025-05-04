@@ -2,7 +2,7 @@ dictionary = []; // no 'let'
 
 async function loadDictionary() {
   try {
-    const response = await fetch('https://scriptin.github.io/jmdict-simplified/jmdict-eng-3.1.0.json');
+    const response = await fetch('https://github.com/user-attachments/files/20027342/jmdict-all-3.6.1%2B20250428122401.json.zip');
     dictionary = await response.json();
     console.log('JMdict loaded:', dictionary.length, 'entries');
   } catch (error) {
