@@ -2,7 +2,7 @@ let dictionary = [];
 
 async function loadDictionary() {
   try {
-    const zipUrl = 'https://github.com/user-attachments/files/20027342/jmdict-all-3.6.1%2B20250428122401.json.zip';
+    const zipUrl = 'https://github.com/terrebinzu/beta/releases/tag/jmdictionary';
     const response = await fetch(zipUrl);
     const blob = await response.blob();
     const zip = await JSZip.loadAsync(blob);
