@@ -257,6 +257,7 @@ document.getElementById("verbInput").addEventListener("keyup", function(event) {
     if (event.key === "Enter") {
       generate();
     }
+}
   });
   
 document.getElementById("darkModeToggle").addEventListener('change', function() {
