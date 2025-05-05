@@ -230,55 +230,43 @@ function deconjugate(input) {
 
 function saveToHistory(verb) {
   let history = JSON.parse(localStorage.getItem("conjugationHistory")) || [];
-  history.unshift(verb);
-  history = history.slice(0, 5);
+  history.unshift(verb); // Add new verb to beginning
+  history = history.slice(0, 5); // Keep only latest 5
   localStorage.setItem("conjugationHistory", JSON.stringify(history));
 }
 
 function displayHistory() {
   const historyList = document.getElementById("historyList");
   historyList.innerHTML = "";
-
   let history = JSON.parse(localStorage.getItem("conjugationHistory")) || [];
-
-  history.forEach(verb => {
+    history.forEach(verb => {
     const li = document.createElement("li");
     li.className = "list-group-item list-group-item-action";
     li.textContent = verb;
     li.onclick = () => {
       document.getElementById("verbInput").value = verb;
-      generate();
+      generate(); // Re-generate when clicked
     };
     historyList.appendChild(li);
   });
 }
-
-// bonus helper
-function capitalize(word) { 
-  return word.charAt(0).toUpperCase() + word.slice(1);
-}
-
-
-  document.getElementById("verbInput").addEventListener("keyup", function(event) {
+document.getElementById("verbInput").addEventListener("keyup", function(event) {
     if (event.key === "Enter") {
       generate();
     }
   });
+document.getElementById("darkModeToggle").addEventListener('change', function() {
+  if (this.checked) {
+    document.body.classList.add("bg-dark", "text-white");
+    document.getElementById("output").classList.remove("bg-white");
+    document.getElementById("output").classList.add("bg-secondary");
+  } else {
+    document.body.classList.remove("bg-dark", "text-white");
+    document.getElementById("output").classList.remove("bg-secondary");
+    document.getElementById("output").classList.add("bg-white");
+  }
+});
 
-  document.getElementById("darkModeToggle").addEventListener('change', function() {
-    if (this.checked) {
-      document.body.classList.add("bg-dark", "text-white");
-      document.getElementById("output").classList.remove("bg-white");
-      document.getElementById("output").classList.add("bg-secondary");
-    } else {
-      document.body.classList.remove("bg-dark", "text-white");
-      document.getElementById("output").classList.remove("bg-secondary");
-      document.getElementById("output").classList.add("bg-white");
-    }
-  });
-
-// Onload setup
-
-window.onload = async function() {
-  displayHistory();        // Load conjugation history from localStorage
+window.onload = function() {
+  displayHistory();
 };
