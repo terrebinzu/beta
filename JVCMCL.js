@@ -1,44 +1,47 @@
 let dictionary = [];
 
-async function loadDictionary() {
-  try {
- const response = await fetch('jmdict-part-1.json'); 
- dictionary = await response.json();
-    console.log('✅ JMdict loaded:', dictionary.length, 'entries');
-  } catch (error) {
-    console.error('❌ Failed to load JMdict from ZIP:', error);
-  }
-}
 
 async function searchWord(userInput) {
-  const kanaInput = wanakana.toKana(userInput); // Normalize user input to Kana if needed
-  const kanjiInput = userInput; // Keep original in case it's Kanji
-const selectedLanguage = document.getElementById("languageSelect").value;
+  const kanaInput = wanakana.toKana(userInput);
+  const kanjiInput = userInput;
+  const partCount = 21;
 
-  for (const entry of dictionary) {
-    const japanese = entry.japanese || [];
-    for (const form of japanese) {
-      if (form.word === kanjiInput || form.reading === kanaInput) {
-        const sense = entry.senses[0];
+  for (let i = 1; i <= partCount; i++) {
+    try {
+     const res = await fetch(`jmdict-part-${i}.json`);
+      const entries = await res.json();
 
-        let definitions;
-        if (sense.definitions) {
-          definitions = sense.definitions[selectedLanguage] || sense.definitions.en || ["No definition found."];
-        } else {
-          definitions = sense.english_definitions || ["No definition found."];
+      for (const entry of entries) {
+        const japanese = entry.japanese || [];
+        for (const form of japanese) {
+          if (form.word === kanjiInput || form.reading === kanaInput) {
+            // 🌐 Language selector logic
+            const selectedLanguage = document.getElementById("languageSelect").value;
+            const sense = entry.senses[0];
+            let definitions;
 
-        return {
-          ...entry,
-          definitions: definitions.join(", "),
-          pos: sense.parts_of_speech?.join(", ") || "Unknown part of speech"
-        };
+            if (sense.definitions) {
+              definitions = sense.definitions[selectedLanguage] || sense.definitions.en || ["No definition found."];
+            } else {
+              definitions = sense.english_definitions || ["No definition found."];
+            }
+
+            return {
+              ...entry,
+              definitions: definitions.join(", "),
+              pos: sense.parts_of_speech?.join(", ") || "Unknown part of speech"
+            };
+          }
+        }
       }
+    } catch (err) {
+      console.error(`❌ Failed to load jmdict-part-${i}.json`, err);
     }
   }
 
   return null; // ❌ Not found
 }
-
+  
 function deconjugate(input) {
   const kanaInput = wanakana.toKana(input);
 
@@ -152,7 +155,6 @@ function capitalize(word) {
 // Onload setup
 
 window.onload = async function() {
-  await loadDictionary();  // Load dictionary first
   displayHistory();        // Load conjugation history from localStorage
 };
 
