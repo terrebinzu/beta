@@ -252,12 +252,12 @@ if (!definitions) {
 
 window.onload = function() {
   displayHistory();
+}
 
 document.getElementById("verbInput").addEventListener("keyup", function(event) {
     if (event.key === "Enter") {
       generate();
     }
-}
   });
   
 document.getElementById("darkModeToggle").addEventListener('change', function() {
