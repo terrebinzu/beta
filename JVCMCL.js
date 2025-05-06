@@ -2,11 +2,13 @@
 let dictionary = [];
 
 async function searchWord(userInput) {
+  
   const kanaInput = wanakana.toKana(userInput);
   const kanjiInput = userInput;
   const partCount = 21;
 
   for (let i = 1; i <= partCount; i++) {
+    console.log(`📦 Loading: jmdict-part-${i}.json`);
     try {
      const res = await fetch(`jmdict-part-${i}.json`);
       const entries = await res.json();
