@@ -1,4 +1,4 @@
-let fulldictionary = [];
+let fullDictionary = [];
 
 async function loadAllDictionaryParts() {
   const partCount = 21;
