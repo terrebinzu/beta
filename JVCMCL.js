@@ -259,8 +259,8 @@ if (!definitions) {
   conjugateAndDisplay(dictForm, html);
 };
 
-window.onload = function() {
-  await loadAllDictionaryParts();
+window.onload = async function() {
+  await loadAllDictionaryParts();  // ← good place to preload dictionary
   displayHistory();
 };
 
