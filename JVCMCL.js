@@ -1,43 +1,50 @@
 
 let dictionary = [];
 
+async function loadAllDictionaryParts() {
+  const partCount = 21;
+  let allEntries = [];
+
+  for (let i = 1; i <= partCount; i++) {
+    try {
+      const res = await fetch(`jmdict-part-${i}.json`);
+      const entries = await res.json();
+      console.log(`✅ Loaded part ${i}`, entries.length);
+      allEntries = allEntries.concat(entries);
+    } catch (err) {
+      console.error(`❌ Failed to load part ${i}`, err);
+    }
+  }
+
+  dictionary = allEntries;
+  console.log("📘 Dictionary preloaded:", dictionary.length, "entries");
+}
+
 async function searchWord(userInput) {
   
   const kanaInput = wanakana.toKana(userInput);
   const kanjiInput = userInput;
-  const partCount = 21;
+ const selectedLanguage = document.getElementById("languageSelect").value;
+  
+  for (const entry of fullDictionary) {
+    const japanese = entry.japanese || [];
+    for (const form of japanese) {
+      if (form.word === kanjiInput || form.reading === kanaInput) {
+        const sense = entry.senses[0];
+        let definitions;
 
-  for (let i = 1; i <= partCount; i++) {
-    console.log(`📦 Loading: jmdict-part-${i}.json`);
-    try {
-     const res = await fetch(`jmdict-part-${i}.json`);
-      const entries = await res.json();
-
-      for (const entry of entries) {
-        const japanese = entry.japanese || [];
-        for (const form of japanese) {
-          if (form.word === kanjiInput || form.reading === kanaInput) {
-            // 🌐 Language selector logic
-            const selectedLanguage = document.getElementById("languageSelect").value;
-            const sense = entry.senses[0];
-            let definitions;
-
-            if (sense.definitions) {
-              definitions = sense.definitions[selectedLanguage] || sense.definitions.en || ["No definition found."];
-            } else {
-              definitions = sense.english_definitions || ["No definition found."];
-            }
-
-            return {
-              ...entry,
-              definitions: definitions.join(", "),
-              pos: sense.parts_of_speech?.join(", ") || "Unknown part of speech"
-            };
-          }
+        if (sense.definitions) {
+          definitions = sense.definitions[selectedLanguage] || sense.definitions.en || ["No definition found."];
+        } else {
+          definitions = sense.english_definitions || ["No definition found."];
         }
+
+        return {
+          ...entry,
+          definitions: definitions.join(", "),
+          pos: sense.parts_of_speech?.join(", ") || "Unknown part of speech"
+        };
       }
-    } catch (err) {
-      console.error(`❌ Failed to load jmdict-part-${i}.json`, err);
     }
   }
 
@@ -253,6 +260,7 @@ if (!definitions) {
 };
 
 window.onload = function() {
+  await loadAllDictionaryParts();
   displayHistory();
 }
 
