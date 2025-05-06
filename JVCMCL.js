@@ -1,4 +1,3 @@
-
 let fulldictionary = [];
 
 async function loadAllDictionaryParts() {
