@@ -209,6 +209,8 @@ window.generate = async function () {
   const selectedLanguage = document.getElementById("languageSelect").value;
   const result = await searchWord(verbInput);
   const normalizedInput = deconjugate(verbInput); // Try deconjugation first
+  const dictForm = result.japanese?.[0]?.word || result.japanese?.[0]?.reading || "N/A";
+
 
   // Show deconjugation notice if different
 const deconjugateNotice = document.getElementById("deconjugateNotice");
@@ -223,7 +225,7 @@ if (normalizedInput !== wanakana.toKana(verbInput)) {
     return;
   }
 
-  const dictForm = result.slug;
+ // const dictForm = result.slug;
   
 let definitions; // Pick definition based on selected language
 switch(selectedLanguage) {
