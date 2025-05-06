@@ -2,21 +2,22 @@ let fullDictionary = [];
 
 async function loadAllDictionaryParts() {
   const partCount = 21;
-  let combined = [];
 
   for (let i = 1; i <= partCount; i++) {
     try {
       const res = await fetch(`jmdict-part-${i}.json`);
       const entries = await res.json();
       console.log(`✅ Loaded part ${i}`, entries.length);
-      allEntries = combined.concat(entries);
+
+      // ✅ Push entries into the full dictionary
+      fullDictionary = fullDictionary.concat(entries);
+
     } catch (err) {
-      console.error(`❌ Failed to load part ${i}`, err);
+      console.error(`❌ Failed to load jmdict-part-${i}.json`, err);
     }
   }
 
-  fulldictionary = combined;
-  console.log("📘 Dictionary preloaded:", fulldictionary.length, "entries");
+  console.log("📘 Dictionary preloaded:", fullDictionary.length, "entries");
 }
 
 async function searchWord(userInput) {
