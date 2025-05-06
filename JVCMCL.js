@@ -26,7 +26,7 @@ async function searchWord(userInput) {
   const kanjiInput = userInput;
  const selectedLanguage = document.getElementById("languageSelect").value;
   
-  for (const entry of fullDictionary) {
+  for (const entry of Dictionary) {
     const japanese = entry.japanese || [];
     for (const form of japanese) {
       if (form.word === kanjiInput || form.reading === kanaInput) {
