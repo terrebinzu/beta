@@ -262,7 +262,7 @@ if (!definitions) {
 window.onload = function() {
   await loadAllDictionaryParts();
   displayHistory();
-}
+};
 
 document.getElementById("verbInput").addEventListener("keyup", function(event) {
     if (event.key === "Enter") {
