@@ -1,23 +1,23 @@
 
-let dictionary = [];
+let fulldictionary = [];
 
 async function loadAllDictionaryParts() {
   const partCount = 21;
-  let allEntries = [];
+  let combined = [];
 
   for (let i = 1; i <= partCount; i++) {
     try {
       const res = await fetch(`jmdict-part-${i}.json`);
       const entries = await res.json();
       console.log(`✅ Loaded part ${i}`, entries.length);
-      allEntries = allEntries.concat(entries);
+      allEntries = combined.concat(entries);
     } catch (err) {
       console.error(`❌ Failed to load part ${i}`, err);
     }
   }
 
-  dictionary = allEntries;
-  console.log("📘 Dictionary preloaded:", dictionary.length, "entries");
+  fulldictionary = combined;
+  console.log("📘 Dictionary preloaded:", fulldictionary.length, "entries");
 }
 
 async function searchWord(userInput) {
@@ -26,7 +26,7 @@ async function searchWord(userInput) {
   const kanjiInput = userInput;
  const selectedLanguage = document.getElementById("languageSelect").value;
   
-  for (const entry of Dictionary) {
+  for (const entry of fullDictionary) {
     const japanese = entry.japanese || [];
     for (const form of japanese) {
       if (form.word === kanjiInput || form.reading === kanaInput) {
