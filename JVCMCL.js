@@ -1,3 +1,5 @@
+console.log("wanakana?", typeof wanakana);
+
 let fullDictionary = [];
 
 async function loadAllDictionaryParts() {
