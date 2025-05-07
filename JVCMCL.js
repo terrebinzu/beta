@@ -10,7 +10,7 @@ async function loadAllDictionaryParts() {
       console.log(`✅ Loaded part ${i}`, entries.length);
 
       // ✅ Push entries into the full dictionary
-      fullDictionary = fullDictionary.concat(entries);
+      fullDictionary.push(...entries); // better loop perfomance(21 files)
 
     } catch (err) {
       console.error(`❌ Failed to load jmdict-part-${i}.json`, err);
@@ -18,6 +18,7 @@ async function loadAllDictionaryParts() {
   }
 
   console.log("📘 Dictionary preloaded:", fullDictionary.length, "entries");
+  console.log("🔍 Sample entry:", fullDictionary[0]);
 }
 
 async function searchWord(userInput) {
